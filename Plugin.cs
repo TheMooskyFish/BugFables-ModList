@@ -18,7 +18,7 @@ public class ModList : BaseUnityPlugin
     {
         static void Postfix(StartMenu __instance)
         {
-            var y = -3.2473f;
+            var y = -3.3473f;
             var menu1 = (Transform)AccessTools.Field(typeof(StartMenu), "menu1").GetValue(__instance);
             if (menu1.transform.Find("Text: |size,0.45||halfline||color,4||font,0|v1.1.2"))
             {
@@ -29,14 +29,14 @@ public class ModList : BaseUnityPlugin
             {
                 if (mod.Metadata.Name == "Mod List")
                     continue;
-                var Name = mod.Metadata.Name;
-                string Version;
-                var ModType = mod.Instance.GetType();
-                if (ModType.GetField("Version") != null)
-                    Version = (string)AccessTools.Field(ModType, "Version").GetValue(ModType);
+                var name = mod.Metadata.Name;
+                string version;
+                var modType = mod.Instance.GetType();
+                if (modType.GetField("Version") != null)
+                    version = (string)AccessTools.Field(modType, "Version").GetValue(modType);
                 else
-                    Version = mod.Metadata.Version.ToString();
-                MainManager.instance.StartCoroutine(MainManager.SetText($"|size,0.45||halfline||color,4||font,0|{Name} v{Version}", new Vector3(-8.75f, y, 10f), menu1));
+                    version = mod.Metadata.Version.ToString();
+                MainManager.instance.StartCoroutine(MainManager.SetText($"|single||size,0.45||halfline||color,4||font,0|{name} v{version}", new Vector3(-8.75f, y, 10f), menu1));
                 y += 0.28f;
             }
         }
