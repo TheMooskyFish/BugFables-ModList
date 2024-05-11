@@ -1,15 +1,17 @@
 ﻿using UnityEngine;
 using BepInEx;
-using BepInEx.Logging;
 using HarmonyLib;
+using BepInEx.Configuration;
 
 [BepInPlugin("dev.mooskyfish.modlist", "Mod List", "1.1")]
 [BepInProcess("Bug Fables.exe")]
 public class ModList : BaseUnityPlugin
 {
+    public static ConfigEntry<bool> ShowModsCount;
     public void Awake()
     {
         var harmony = new Harmony("dev.mooskyfish.modlist");
+        ShowModsCount = Config.Bind("Config", "Show Mods Count", true, "");
         harmony.PatchAll();
     }
 
@@ -25,6 +27,11 @@ public class ModList : BaseUnityPlugin
                 Destroy(menu1.transform.Find("Text: |size,0.45||halfline||color,4||font,0|v1.1.2").gameObject);
             }
             MainManager.instance.StartCoroutine(MainManager.SetText("|size,0.45||halfline||color,4||font,0|v" + Application.version + $" - BepInEx v{typeof(Paths).Assembly.GetName().Version}", new Vector3(-8.75f, -3.55f, 10f), menu1));
+            if (ShowModsCount.Value)
+            {
+                MainManager.instance.StartCoroutine(MainManager.SetText($"|single||size,0.45||halfline||color,4||font,0|Mods Loaded: {BepInEx.Bootstrap.Chainloader.PluginInfos.Values.Count}", new Vector3(-8.75f, y, 10f), menu1));
+                return;
+            }
             foreach (var mod in BepInEx.Bootstrap.Chainloader.PluginInfos.Values)
             {
                 if (mod.Metadata.Name == "Mod List")
